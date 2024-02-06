@@ -2,6 +2,7 @@ package generateotpcode
 
 import (
 	"errors"
+	applicationErrors "health/core/application/errors"
 	"health/core/clients/domain/entities"
 	"health/core/clients/domain/repositories"
 	"health/core/infra/utils"
@@ -27,25 +28,31 @@ func (usecase *Usecase) Execute(Input Input) (*string, error) {
 
 	validationCode, err := usecase.validationsCodesRepository.FindCurrentUserValidationCode(*user)
 
-	if validationCode != nil && validationCode.GetExpirationDate().Before(time.Now()) {
-		return nil, errors.New("Theres still active code")
+	switch err.(type) {
+	case *applicationErrors.NotFoundError:
+		{
+			code := utils.GenerateCode(6)
+			now := time.Now().Format(time.RFC3339)
+
+			validationCode, err = entities.NewValidationCode(&code, &now, user, nil)
+
+			if err != nil {
+				return nil, err
+			}
+
+			err = usecase.validationsCodesRepository.Create(*validationCode, nil)
+
+			if err != nil {
+				return nil, err
+			}
+
+			return &code, nil
+		}
+
+	default:
+		{
+			return nil, errors.New("Theres a code still active")
+		}
 	}
-
-	code := utils.GenerateCode(6)
-	now := time.Now().Format(time.RFC3339)
-
-	validationCode, err = entities.NewValidationCode(&code, &now, user, nil)
-
-	if err != nil {
-		return nil, err
-	}
-
-	err = usecase.validationsCodesRepository.Create(*validationCode, nil)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &code, nil
 
 }

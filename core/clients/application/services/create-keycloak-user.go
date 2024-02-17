@@ -3,6 +3,7 @@ package services
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"health/core/infra/config"
 	"io"
 	"net/http"
@@ -46,7 +47,6 @@ func CreateKeycloakUser(input KeycloakUser) error {
 	bodyResponseReader, err := io.ReadAll(resp.Body)
 
 	if err != nil {
-
 		return err
 	}
 
@@ -55,6 +55,10 @@ func CreateKeycloakUser(input KeycloakUser) error {
 	json.Unmarshal(bodyResponseReader, &bodyResponse)
 
 	if resp.StatusCode > 204 {
+		if bodyResponse["errorMessage"] != nil {
+			return errors.New(string(bodyResponseReader))
+		}
+
 		return http.ErrAbortHandler
 	}
 

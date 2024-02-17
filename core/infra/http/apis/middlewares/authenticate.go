@@ -39,16 +39,25 @@ func EnsureAuthenticated(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		var info *oidc.UserInfo
+		var userInfo *oidc.UserInfo
 
+		err = token.Claims(&userInfo)
+
+		if err != nil {
+			http.Redirect(w, r, config.Oauth2Config.AuthCodeURL(tokenAccess), http.StatusFound)
+			return
+		}
+		ctx := context.WithValue(r.Context(), "userInfo", userInfo)
+
+		var info map[string]any
 		err = token.Claims(&info)
 
 		if err != nil {
 			http.Redirect(w, r, config.Oauth2Config.AuthCodeURL(tokenAccess), http.StatusFound)
 			return
 		}
-
-		ctx := context.WithValue(r.Context(), "userInfo", info)
+		roles := info["resource_access"].(map[string]any)
+		ctx = context.WithValue(ctx, "roles", roles)
 
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)

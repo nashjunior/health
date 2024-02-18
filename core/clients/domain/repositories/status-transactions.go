@@ -34,4 +34,6 @@ type IStatusTransactionsRepository interface {
 
 	Delete(entity entities.StatusTransaction, tx coreRepository.IConnection) error
 	DeleteMany(entidades []entities.StatusTransaction, tx coreRepository.IConnection) error
+
+	DeleteByTransaction(entity entities.Transaction, tx coreRepository.IConnection) error
 }

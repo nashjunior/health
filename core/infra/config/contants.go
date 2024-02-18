@@ -34,6 +34,13 @@ var (
 	RedirectURL                   string
 	CustomerAccessToken           *string
 
+	//Postgres-Config
+	PostgresHost         string
+	PostgresDb           string
+	PostgresPort         string
+	PostgresUser         string
+	PostgresUserPassword string
+
 	CsrfMiddleware func(http.Handler) http.Handler
 	TokenMap       = sync.Map{}
 	Provider       *oidc.Provider
@@ -89,6 +96,13 @@ func Load() {
 	KeycloaktCustomerClientSecret = os.Getenv("KEYCLOAK_CLIENT_SECRET")
 	RedirectURL = os.Getenv("KEYCLOAK_REDIRECT_URL")
 
+	//POSTGRES
+	PostgresHost = os.Getenv("POSTGRES_HOST")
+	PostgresDb = os.Getenv("POSTGRES_DB")
+	PostgresPort = os.Getenv("POSTGRES_PORT")
+	PostgresUser = os.Getenv("POSTGRES_USER")
+	PostgresUserPassword = os.Getenv("POSTGRES_USER_PASSWORD")
+
 	//CRSF
 	tokenCsrf := os.Getenv("CRSF_KEY")
 
@@ -101,7 +115,7 @@ func Load() {
 	Oauth2Config = oauth2.Config{
 		ClientID:     KeycloakCustomerClientID,
 		ClientSecret: KeycloaktCustomerClientSecret,
-		RedirectURL:  RedirectURL,
+		// RedirectURL:  RedirectURL,
 		// Discovery returns the OAuth2 endpoints.
 		Endpoint: Provider.Endpoint(),
 		// "openid" is a required scope for OpenID Connect flows.

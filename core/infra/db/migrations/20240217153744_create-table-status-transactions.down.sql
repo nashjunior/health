@@ -1,0 +1,1 @@
+DROP TABLE accounting.status_transactions

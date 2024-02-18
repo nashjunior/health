@@ -15,7 +15,10 @@ func GenerateRouter() *mux.Router {
 		AuthRoutes[1:],
 		append(
 			UsersRoutes,
-			TypesTransasctionsRoutes...,
+			append(
+				TypesTransasctionsRoutes,
+				TransasctionsRoutes...,
+			)...,
 		)...,
 	))
 }

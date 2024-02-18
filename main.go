@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"health/core/clients/application/services"
 	"health/core/infra/config"
+	"health/core/infra/db"
 	"health/core/infra/http/apis/middlewares"
 	routers "health/core/infra/http/apis/routes"
 	"log"
@@ -19,7 +20,7 @@ func main() {
 
 	config.Load()
 
-	// router := mux.NewRouter()
+	db.StartConnections()
 
 	router := routers.GenerateRouter()
 	services.GetAccessToken()
@@ -86,25 +87,6 @@ func main() {
 			return
 		}
 		w.Write(data)
-	})
-
-	router.HandleFunc("/token", func(w http.ResponseWriter, r *http.Request) {
-		token := r.Header.Get("X-CSRF-Token")
-
-		fmt.Println(token)
-
-		// if _, ok := config.TokenMap.Load(token); !ok {
-		// 	http.Error(w, "state did not match", http.StatusBadRequest)
-		// 	return
-		// }
-
-		config.TokenMap.Delete(token)
-
-		newToken := csrf.Token(r)
-		config.TokenMap.Store(newToken, true)
-
-		w.Header().Set("X-CSRF-Token", newToken)
-		w.Write([]byte("could get a token"))
 	})
 
 	http.Handle("/", config.CsrfMiddleware(router))

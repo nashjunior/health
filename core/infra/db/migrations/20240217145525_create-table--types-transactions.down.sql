@@ -1,0 +1,1 @@
+DROP TABLE accounting.types_transactions

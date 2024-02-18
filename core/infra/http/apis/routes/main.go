@@ -7,9 +7,15 @@ import (
 func GenerateRouter() *mux.Router {
 	r := mux.NewRouter()
 
-	return ConfigureRoutes(r, append(
-		UsersRoutes,
+	codeRoute := AuthRoutes[0]
 
-		AuthRoutes...,
+	r.HandleFunc(codeRoute.URI, codeRoute.Callback)
+
+	return ConfigureRoutes(r, append(
+		AuthRoutes[1:],
+		append(
+			UsersRoutes,
+			TypesTransasctionsRoutes...,
+		)...,
 	))
 }

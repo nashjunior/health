@@ -4,16 +4,124 @@ import (
 	"bytes"
 	"encoding/json"
 	"health/core/clients/application/services"
+	createenterprise "health/core/clients/application/use-cases/create-enterprise"
+	createperson "health/core/clients/application/use-cases/create-person"
+	signup "health/core/clients/application/use-cases/sign-up"
 	"health/core/infra/config"
+	inmemory "health/core/infra/db/in-memory"
+	"time"
 
 	"io"
 	"net/http"
+
+	"github.com/gorilla/csrf"
 )
 
 type UsersController struct {
 }
 
 func (controller *UsersController) Create(response http.ResponseWriter, request *http.Request) {
+
+	response.Header().Set("Content-Type", "application/json")
+
+	body := map[string]any{}
+
+	err := json.NewDecoder(request.Body).Decode(&body)
+
+	if err != nil {
+		http.Error(response, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err != nil {
+		http.Error(response, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var user any
+
+	var email *string
+
+	if body["email"] != nil {
+		emailCustom := body["email"].(string)
+		email = &emailCustom
+	}
+
+	var birthdayDate *time.Time
+
+	if body["birthdayDate"] != nil {
+		birthdayDateCustom := body["birthdayDate"].(time.Time)
+		birthdayDate = &birthdayDateCustom
+	}
+
+	if config.ValidationCode {
+		usecase := signup.NewUsecase(inmemory.NewUsersInMemoryRepository())
+		user, err = usecase.Execute(signup.Input{Name: body["name"].(string)})
+	} else if body["cnpj"] != nil {
+		usecase := createenterprise.New()
+		user, err = usecase.Execute(createenterprise.Input{
+			Name:         body["name"].(string),
+			Cnpj:         body["cnpj"].(string),
+			Email:        email,
+			SocialReason: body["social_reason"].(string),
+			BirthdayDate: birthdayDate,
+		})
+
+		if err != nil {
+			response.WriteHeader(http.StatusBadRequest)
+			response.Write([]byte(err.Error()))
+			return
+		}
+	} else {
+
+		var cpf *string
+
+		if body["cpf"] != nil {
+			cpfCustom := body["cpf"].(string)
+			cpf = &cpfCustom
+		}
+
+		var gender *string
+
+		if body["gender"] != nil {
+			genderCustom := body["gender"].(string)
+			gender = &genderCustom
+		}
+
+		usecase := createperson.New()
+		user, err = usecase.Execute(createperson.Input{
+			Name:         body["name"].(string),
+			Cpf:          cpf,
+			Email:        email,
+			Gender:       gender,
+			BirthdayDate: birthdayDate,
+		})
+
+		if err != nil {
+			http.Error(response, err.Error(), http.StatusBadRequest)
+			return
+		}
+	}
+
+	response.Header().Set("X-CSRF-Token", csrf.Token(request))
+
+	if err != nil {
+		http.Error(response, err.Error(), http.StatusBadRequest)
+	}
+
+	encoded, err := json.Marshal(user)
+
+	if err != nil {
+		http.Error(response, err.Error(), http.StatusInternalServerError)
+	}
+
+	response.WriteHeader(http.StatusCreated)
+	response.Write(encoded)
+	return
+
+}
+
+func (controller *UsersController) Validate(response http.ResponseWriter, request *http.Request) {
 
 	response.Header().Set("Content-Type", "application/json")
 
@@ -37,6 +145,8 @@ func (controller *UsersController) Create(response http.ResponseWriter, request 
 		http.Error(response, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	response.Header().Set("X-CSRF-Token", csrf.Token(request))
 
 	url := config.KeycloakUrl + "/admin/realms/" + config.KeycloakCustomerRealm + "/users"
 

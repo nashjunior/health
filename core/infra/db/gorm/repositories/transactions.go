@@ -241,7 +241,9 @@ func (repo *TransactionsGorm) Delete(entity ent.Transaction, conn repo.IConnecti
 		repo.db = gorm.Connection.Db
 	}
 
-	if result := repo.db.Delete(&entities.Transaction{}, entity.GetID()); result.Error != nil {
+	if result := repo.db.Debug().
+		Where("uuid = ?", entity.GetID()).
+		Delete(&entities.Transaction{}); result.Error != nil {
 		return result.Error
 	}
 

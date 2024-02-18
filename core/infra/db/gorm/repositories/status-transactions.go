@@ -293,6 +293,25 @@ func (repo *StatusTransactionsGorm) DeleteMany(entitiesToDelete []ent.StatusTran
 	return nil
 }
 
+func (repo *StatusTransactionsGorm) DeleteByTransaction(entity ent.Transaction, conn repo.IConnection) error {
+	if conn2, ok := conn.(*gorm.ConnectionGorm); ok && conn2 != nil {
+		repo.db = conn2.Tx
+	} else {
+		repo.db = gorm.Connection.Db
+	}
+
+	if result := repo.db.Raw(
+		"UPDATE accounting.status_transactions st "+
+			"set deleted_at = now() FROM accounting.transactions t "+
+			"where t.id = st.id_transaction and t.uuid =?",
+		entity.GetID(),
+	).Scan(nil); result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
 func NewStatusTransactionsGorm() repositories.IStatusTransactionsRepository {
 	return &StatusTransactionsGorm{}
 }

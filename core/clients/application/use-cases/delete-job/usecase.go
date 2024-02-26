@@ -13,9 +13,9 @@ type Usecase struct {
 	jobsHierarchiesRepository repositories.IJobsHierarchiesRepository
 }
 
-func (usecase *Usecase) Execute(input Input) error {
+func (usecase *Usecase) Execute(id string) error {
 
-	job, err := usecase.jobsRepository.FindByID(input.Id, nil)
+	job, err := usecase.jobsRepository.FindByID(id, nil)
 
 	if err != nil {
 		return err

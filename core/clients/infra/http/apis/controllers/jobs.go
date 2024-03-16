@@ -2,25 +2,25 @@ package controllers
 
 import (
 	"encoding/json"
-	createdepartment "health/core/clients/application/use-cases/create-department"
-	deletedepartment "health/core/clients/application/use-cases/delete-department"
-	finddepartmentmanagers "health/core/clients/application/use-cases/find-deparment-managers"
-	finddeparrtment "health/core/clients/application/use-cases/find-deparrtment"
-	finddepartmentsubordinates "health/core/clients/application/use-cases/find-department-subordinates"
-	"health/core/infra/db/gorm/repositories"
+	createjob "health/core/clients/application/use-cases/create-job"
+	deletejob "health/core/clients/application/use-cases/delete-job"
+	findjob "health/core/clients/application/use-cases/find-job"
+	findjobmanagers "health/core/clients/application/use-cases/find-job-managers"
+	findjobsubordinates "health/core/clients/application/use-cases/find-job-subordinates"
+	"health/core/clients/infra/db/gorm/repositories"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
-type DepartmentsController struct{}
+type JobsController struct{}
 
-func (controller *DepartmentsController) FindById(response http.ResponseWriter, request *http.Request) {
+func (controller *JobsController) FindById(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-Type", "application/json")
 
 	vars := mux.Vars(request)
 
-	usecase := finddeparrtment.New(repositories.NewDepartmentssRepositoryGorm())
+	usecase := findjob.New(repositories.NewJobsRepositoryGorm())
 
 	output, err := usecase.Execute(vars["id"])
 
@@ -36,12 +36,12 @@ func (controller *DepartmentsController) FindById(response http.ResponseWriter, 
 
 }
 
-func (controller *DepartmentsController) FindManagersById(response http.ResponseWriter, request *http.Request) {
+func (controller *JobsController) FindManagersById(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-Type", "application/json")
 
 	vars := mux.Vars(request)
 
-	usecase := finddepartmentmanagers.New(repositories.NewDepartmentssRepositoryGorm())
+	usecase := findjobmanagers.New(repositories.NewJobsRepositoryGorm())
 
 	output, err := usecase.Execute(vars["id"])
 
@@ -57,12 +57,12 @@ func (controller *DepartmentsController) FindManagersById(response http.Response
 
 }
 
-func (controller *DepartmentsController) FindSubordinatesById(response http.ResponseWriter, request *http.Request) {
+func (controller *JobsController) FindSubordinatesById(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-Type", "application/json")
 
 	vars := mux.Vars(request)
 
-	usecase := finddepartmentsubordinates.New(repositories.NewDepartmentssRepositoryGorm())
+	usecase := findjobsubordinates.New(repositories.NewJobsRepositoryGorm())
 
 	output, err := usecase.Execute(vars["id"])
 
@@ -78,7 +78,7 @@ func (controller *DepartmentsController) FindSubordinatesById(response http.Resp
 
 }
 
-func (controller *DepartmentsController) Create(response http.ResponseWriter, request *http.Request) {
+func (controller *JobsController) Create(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-Type", "application/json")
 
 	body := map[string]any{}
@@ -90,9 +90,9 @@ func (controller *DepartmentsController) Create(response http.ResponseWriter, re
 		return
 	}
 
-	usecase := createdepartment.New(
-		repositories.NewDepartmentssRepositoryGorm(),
-		repositories.NewDepartmentsHiearchyRepositoryGorm(),
+	usecase := createjob.New(
+		repositories.NewJobsRepositoryGorm(),
+		repositories.NewJobsHiearchyRepositoryGorm(),
 	)
 
 	var idManager *string
@@ -101,7 +101,7 @@ func (controller *DepartmentsController) Create(response http.ResponseWriter, re
 		idManager = &id
 	}
 
-	output, err := usecase.Execute(createdepartment.Input{
+	output, err := usecase.Execute(createjob.Input{
 		Name:      body["name"].(string),
 		IdManager: idManager,
 	})
@@ -117,12 +117,12 @@ func (controller *DepartmentsController) Create(response http.ResponseWriter, re
 	return
 }
 
-func (controller *DepartmentsController) Delete(response http.ResponseWriter, request *http.Request) {
+func (controller *JobsController) Delete(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-Type", "application/json")
 
 	vars := mux.Vars(request)
 
-	usecase := deletedepartment.New(repositories.NewDepartmentssRepositoryGorm(), repositories.NewDepartmentsHiearchyRepositoryGorm())
+	usecase := deletejob.New(repositories.NewJobsRepositoryGorm(), repositories.NewJobsHiearchyRepositoryGorm())
 
 	err := usecase.Execute(vars["id"])
 

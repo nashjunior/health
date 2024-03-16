@@ -20,8 +20,11 @@ func GenerateRouter() *mux.Router {
 				append(
 					DepartmentsRoutes,
 					append(
-						TypesTransasctionsRoutes,
-						TransasctionsRoutes...,
+						EmployeesRoutes,
+						append(
+							TypesTransasctionsRoutes,
+							TransasctionsRoutes...,
+						)...,
 					)...,
 				)...,
 			)...,

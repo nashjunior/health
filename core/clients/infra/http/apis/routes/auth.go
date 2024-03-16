@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"health/core/infra/http/apis/controllers"
+	"health/core/clients/infra/http/apis/controllers"
 	"net/http"
 )
 

@@ -7,8 +7,8 @@ import (
 	createenterprise "health/core/clients/application/use-cases/create-enterprise"
 	createperson "health/core/clients/application/use-cases/create-person"
 	signup "health/core/clients/application/use-cases/sign-up"
+	inmemory "health/core/clients/infra/db/in-memory"
 	"health/core/infra/config"
-	inmemory "health/core/infra/db/in-memory"
 	"time"
 
 	"io"

@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"health/core/clients/application/services"
+	routers "health/core/clients/infra/http/apis/routes"
+	"health/core/infra/apis/middlewares"
 	"health/core/infra/config"
 	"health/core/infra/db"
-	"health/core/infra/http/apis/middlewares"
-	routers "health/core/infra/http/apis/routes"
 	"log"
 	"net/http"
 

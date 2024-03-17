@@ -2,12 +2,14 @@ package routers
 
 import (
 	"health/core/clients/infra/http/apis/controllers"
+	"health/core/seedwork/infra/http/api"
+
 	"net/http"
 )
 
 var authController = controllers.AuthController{}
 
-var AuthRoutes = []Route{
+var AuthRoutes = []api.Route{
 	{
 		URI:                   "/code",
 		Method:                http.MethodPost,

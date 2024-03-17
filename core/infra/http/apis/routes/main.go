@@ -27,6 +27,7 @@ func GenerateRouter() *mux.Router {
 			routersHealth.DiseaseRoutes,
 			routersHealth.InjuriesRoutes,
 			routersGym.EquipamentsRoutes,
+			routersGym.ExercisesRoutes,
 		),
 	)
 

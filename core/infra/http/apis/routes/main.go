@@ -24,6 +24,7 @@ func GenerateRouter() *mux.Router {
 			routersCore.TypesTransasctionsRoutes,
 			routersCore.TransasctionsRoutes,
 			routersHealth.DiseaseRoutes,
+			routersHealth.InjuriesRoutes,
 		),
 	)
 

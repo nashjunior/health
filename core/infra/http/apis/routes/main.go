@@ -6,6 +6,7 @@ import (
 
 	routersGym "health/gym/infra/http/apis/routes"
 	routersHealth "health/health/infra/http/apis/routes"
+	routersNutrition "health/nutrition/infra/http/apis/routes"
 
 	"github.com/gorilla/mux"
 )
@@ -28,6 +29,7 @@ func GenerateRouter() *mux.Router {
 			routersHealth.InjuriesRoutes,
 			routersGym.EquipamentsRoutes,
 			routersGym.ExercisesRoutes,
+			routersNutrition.SuplmentsRoutes,
 		),
 	)
 

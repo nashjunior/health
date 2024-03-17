@@ -4,6 +4,7 @@ import (
 	routersCore "health/core/clients/infra/http/apis/routes"
 	"slices"
 
+	routersGym "health/gym/infra/http/apis/routes"
 	routersHealth "health/health/infra/http/apis/routes"
 
 	"github.com/gorilla/mux"
@@ -25,6 +26,7 @@ func GenerateRouter() *mux.Router {
 			routersCore.TransasctionsRoutes,
 			routersHealth.DiseaseRoutes,
 			routersHealth.InjuriesRoutes,
+			routersGym.EquipamentsRoutes,
 		),
 	)
 

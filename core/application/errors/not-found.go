@@ -1,6 +1,7 @@
 package errors
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
@@ -11,8 +12,17 @@ type NotFoundError struct {
 }
 
 func (r *NotFoundError) Error() string {
+	a := map[string]any{
+		"message": r.Message,
+	}
 
-	return fmt.Sprintf("Validation error")
+	resp, err := json.Marshal(a)
+
+	if err != nil {
+		return err.Error()
+	}
+
+	return fmt.Sprintf("%s", resp)
 }
 
 func NewNotFoundError(message string) error {

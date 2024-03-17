@@ -9,8 +9,8 @@ import (
 
 	ent "health/core/clients/domain/entities"
 	"health/core/clients/domain/repositories"
+	"health/core/clients/infra/db/gorm/entities"
 	"health/core/infra/db/gorm"
-	"health/core/infra/db/gorm/entities"
 	"time"
 
 	"github.com/google/uuid"

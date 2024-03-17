@@ -5,8 +5,8 @@ import (
 	repo "health/core/application/repositories"
 	ent "health/core/clients/domain/entities"
 	"health/core/clients/domain/repositories"
+	"health/core/clients/infra/db/gorm/entities"
 	"health/core/infra/db/gorm"
-	"health/core/infra/db/gorm/entities"
 	"math/big"
 
 	valueobjects "health/core/application/value-objects"

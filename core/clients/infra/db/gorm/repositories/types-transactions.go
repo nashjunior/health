@@ -3,8 +3,8 @@ package repositories
 import (
 	"health/core/application/errors"
 	valueobjects "health/core/application/value-objects"
+	"health/core/clients/infra/db/gorm/entities"
 	"health/core/infra/db/gorm"
-	"health/core/infra/db/gorm/entities"
 	"math/big"
 
 	repo "health/core/application/repositories"

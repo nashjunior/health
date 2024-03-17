@@ -1,13 +1,15 @@
 package routers
 
 import (
-	"health/core/infra/http/apis/controllers"
+	"health/core/clients/infra/http/apis/controllers"
+	"health/core/seedwork/infra/http/api"
+
 	"net/http"
 )
 
 var departmentsController = controllers.DepartmentsController{}
 
-var DepartmentsRoutes = []Route{
+var DepartmentsRoutes = []api.Route{
 	{
 		URI:                   "/departments/{id}",
 		Method:                http.MethodGet,

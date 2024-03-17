@@ -5,8 +5,9 @@ import (
 	"fmt"
 	createtypetransaction "health/core/clients/application/use-cases/create-type-transaction"
 	findtypetransaction "health/core/clients/application/use-cases/find-type-transaction"
+
 	"health/core/clients/domain/entities"
-	"health/core/infra/db/gorm/repositories"
+	"health/core/clients/infra/db/gorm/repositories"
 
 	"net/http"
 

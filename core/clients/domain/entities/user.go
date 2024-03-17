@@ -76,7 +76,7 @@ func NewUser(name *string, id *valueobjects.UniqueEntityUUID) (*User, error) {
 
 	}
 
-	user.Entity = entities.Entity{UniqueEntityUUID: *id}
+	user.Entity = entities.NewEntity(id, nil)
 
 	return user, nil
 }

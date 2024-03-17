@@ -1,13 +1,15 @@
 package routers
 
 import (
-	"health/core/infra/http/apis/controllers"
+	"health/core/clients/infra/http/apis/controllers"
+	"health/core/seedwork/infra/http/api"
+
 	"net/http"
 )
 
 var jobsController = controllers.JobsController{}
 
-var JobsRoutes = []Route{
+var JobsRoutes = []api.Route{
 	{
 		URI:                   "/jobs/{id}",
 		Method:                http.MethodGet,
